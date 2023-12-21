@@ -16,16 +16,17 @@ data WordPath = WordPath { word :: String
 type R        = Reader GameData
 
 direction :: (Int, Int) -> String
-direction (0, 0)   = "X"
-direction (-1, 0)  = "N"
-direction (-1, 1)  = "NE"
-direction (0, 1)   = "E"
-direction (1, 1)   = "SE"
-direction (1, 0)   = "S"
-direction (1, -1)  = "SW"
-direction (0, -1)  = "W"
-direction (-1, -1) = "NW"
-direction _        = "-"
+direction x = case x of
+    (0, 0)   -> "X"
+    (-1, 0)  -> "N"
+    (-1, 1)  -> "NE"
+    (0, 1)   -> "E"
+    (1, 1)   -> "SE"
+    (1, 0)   -> "S"
+    (1, -1)  -> "SW"
+    (0, -1)  -> "W"
+    (-1, -1) -> "NW"
+    _        -> "O"
 
 dirStr :: [(Int, Int)] -> String
 dirStr p = unwords $ zipWith f p (drop 1 p)
