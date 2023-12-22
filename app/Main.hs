@@ -4,7 +4,8 @@ import Data.List (sortBy)
 import Data.Ord (comparing)
 import System.Environment (getArgs)
 
-import Lib
+import Game (wordPaths)
+import WordPath (WordPath(..))
 
 main :: IO ()
 main = do

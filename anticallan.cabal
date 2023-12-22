@@ -25,7 +25,8 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Game
+      WordPath
   other-modules:
       Paths_anticallan
   autogen-modules:
