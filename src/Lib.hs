@@ -6,7 +6,8 @@ module Lib
 
 import Control.Monad.Reader
 import Data.Array
-import Data.Set (fromList, Set, member, insert, empty)
+import Data.Set (fromList, Set, member)
+import Data.List (tails)
 
 data GameData = GameData { board :: Array (Int, Int) Char
                          , wordList :: Set String
@@ -55,7 +56,7 @@ run i p = do
     pr <- asks pref
     w  <- pathToWord p'
     if member w pr
-        then ([p']++) . concat <$> mapM (`run` p') ns
+        then (p':) . concat <$> mapM (`run` p') ns
         else return []
 
 getPaths' :: R [WordPath]
@@ -69,7 +70,7 @@ arrFromChars cs w h = array ((0,0),(h-1,w-1))
     [((i,j), cs !! (j+i*w)) | i <- [0..w-1], j <- [0..h-1]]
 
 prefSet :: [String] -> Set String
-prefSet = foldl (\w x -> foldl (flip (insert . flip drop x)) w [0..length x]) empty
+prefSet = fromList . concatMap tails
 
 wordPaths :: String -> [String] -> [WordPath]
 wordPaths s ws = runReader getPaths' $ GameData
