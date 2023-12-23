@@ -6,6 +6,7 @@ import Control.Monad.Reader
 import Data.Array
 import Data.Set (fromList, Set, member)
 import Data.List (tails)
+import Board(Board(..))
 
 import WordPath
 
@@ -43,15 +44,11 @@ getPaths' = do
     ps <- concat <$> mapM (`run` []) (indices b)
     return $ filter ((`member` w) . word) $ zipWith WordPath (map (map (b!)) ps) ps
 
-arrFromChars :: [Char] -> Int -> Int -> Array (Int, Int) Char 
-arrFromChars cs w h = array ((0,0),(h-1,w-1)) 
-    [((i,j), cs !! (j+i*w)) | i <- [0..w-1], j <- [0..h-1]]
-
 prefSet :: [String] -> Set String
 prefSet = fromList . concatMap tails
 
-wordPaths :: String -> [String] -> [WordPath]
-wordPaths s ws = runReader getPaths' $ GameData
-    (arrFromChars s 4 4)
+wordPaths :: Board -> [String] -> [WordPath]
+wordPaths (Board xs) ws = runReader getPaths' $ GameData
+    xs
     (fromList ws)
     (prefSet ws)

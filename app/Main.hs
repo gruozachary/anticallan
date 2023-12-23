@@ -6,10 +6,15 @@ import System.Environment (getArgs)
 
 import Game (wordPaths)
 import WordPath (WordPath(..))
+import Board (Board, fromLinearString, tracePath)
+
+printWord :: WordPath -> Board -> IO ()
+printWord wp@(WordPath w _) b = putStrLn $ unlines ["~"++w++"~", tracePath wp b]
 
 main :: IO ()
 main = do
     (b:f:_) <- getArgs
     ws <- lines <$> readFile f
-    let ps = wordPaths b ws
-    mapM_ print $ sortBy (comparing (length . word)) ps
+    let board = fromLinearString (4, 4) b
+        wps   = wordPaths board ws
+    mapM_ (`printWord` board) $ sortBy (comparing (length . word)) wps

@@ -1,26 +1,46 @@
 module WordPath
     ( WordPath(..)
+    , Direction(..)
+    , dirPosPairs
+    , dirChar
     ) where
+import Control.Applicative (Applicative(liftA2))
 
 data WordPath = WordPath { word :: String
                          , path :: [(Int, Int)] }
 
-direction :: (Int, Int) -> String
-direction x = case x of
-    (0, 0)   -> "X"
-    (-1, 0)  -> "N"
-    (-1, 1)  -> "NE"
-    (0, 1)   -> "E"
-    (1, 1)   -> "SE"
-    (1, 0)   -> "S"
-    (1, -1)  -> "SW"
-    (0, -1)  -> "W"
-    (-1, -1) -> "NW"
-    _        -> "O"
+data Direction = N | NE | E | SE | S | SW | W | NW | X
 
-dirStr :: [(Int, Int)] -> String
-dirStr p = unwords $ zipWith f p (drop 1 p)
+direction :: (Int, Int) -> Direction
+direction x = case x of
+    (-1, 0)  -> N
+    (-1, 1)  -> NE
+    (0, 1)   -> E
+    (1, 1)   -> SE
+    (1, 0)   -> S
+    (1, -1)  -> SW
+    (0, -1)  -> W
+    (-1, -1) -> NW
+    _        -> X
+
+dirChar :: Direction -> Char
+dirChar x = case x of
+    N  -> '↑'
+    NE -> '↗'
+    E  -> '→'
+    SE -> '↘'
+    S  -> '↓'
+    SW -> '↙'
+    W  -> '←'
+    NW -> '↖'
+    X  -> '·'
+
+instance Show Direction where
+    show = show . dirChar
+
+directions :: WordPath -> [Direction]
+directions (WordPath _ p) = X : zipWith f p (drop 1 p)
     where f (a, b) (c, d) = direction (c-a, d-b)
 
-instance Show WordPath where
-    show (WordPath s p) = unwords [show (head p), dirStr p, s]
+dirPosPairs :: WordPath -> [((Int, Int), Direction)]
+dirPosPairs = liftA2 zip path directions
