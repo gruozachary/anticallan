@@ -11,14 +11,29 @@ import WordPath (WordPath(..), dirPosPairs, dirChar, offset, opposite)
 newtype Board = Board (Array (Int, Int) Char)
 
 tracePath :: WordPath -> Board -> String
+--tracePath wp (Board xs) =
+--    let (_, (y, x))     = bounds xs
+--        g (a, b) (c, d) = (a+c, b+d)
+--        zs              = map (\((a, b), c) 
+--            -> ((2*a+1, 2*b+1), c)) (assocs xs)
+--        bs              = map (\((a, b), c)
+--            -> (g (2*a+1, 2*b+1)
+--                (offset $ opposite c), dirChar c))
+--                    (dirPosPairs wp)
+--        cs              = array ((0, 0), (2*y+2, 2*x+2)) [((i, j), ' ') | i <- [0..2*y+2], j <- [0..2*x+2]]
+--        ds              = cs // (bs ++ zs)
+--    in prettyArr ds
+
 tracePath wp (Board xs) =
-    let (_, (y, x)) = bounds xs
-        g (a, b) (c, d)  = (a+c, b+d)
-        zs = map (\((a, b), c) -> ((2*a+1, 2*b+1), c)) (assocs xs)
-        bs = map (\((a, b), c) -> (g (2*a+1, 2*b+1) (offset $ opposite c), dirChar c)) (dirPosPairs wp)
-        cs = array ((0, 0), (2*y+2, 2*x+2)) [((i, j), ' ') | i <- [0..2*y+2], j <- [0..2*x+2]]
-        ds = cs // (bs ++ zs)
-    in prettyArr ds
+    prettyArr $ array ((0, 0), (2*y+2, 2*x+2))
+        [((i, j), ' ') | i <- [0..2*y+2], j <- [0..2*x+2]]
+            // (map (\((a, b), c) -> (g (2*a+1, 2*b+1)
+                (offset $ opposite c), dirChar c))
+                    (dirPosPairs wp)
+            ++ map (\((a, b), c) -> ((2*a+1, 2*b+1), c))
+                (assocs xs))
+    where g (a, b) (c, d) = (a+c, b+d)
+          (_, (y, x))     = bounds xs
     
 
 fromLinearString :: (Int, Int) -> String -> Board
