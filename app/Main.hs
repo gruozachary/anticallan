@@ -6,10 +6,10 @@ import System.Environment (getArgs)
 
 import Game (wordPaths)
 import WordPath (WordPath(..))
-import Board (Board, fromLinearString, tracePath)
+import Board (Board(..), fromLinearString, tracePath)
 
 printWord :: WordPath -> Board -> IO ()
-printWord wp@(WordPath w _) b = putStrLn $ unlines ["~"++w++"~", tracePath wp b]
+printWord wp@(WordPath w _) b = putStr $ unlines ["~"++w++"~", tracePath wp b]
 
 main :: IO ()
 main = do

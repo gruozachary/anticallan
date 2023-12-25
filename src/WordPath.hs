@@ -3,6 +3,8 @@ module WordPath
     , Direction(..)
     , dirPosPairs
     , dirChar
+    , offset
+    , opposite
     ) where
 import Control.Applicative (Applicative(liftA2))
 
@@ -23,6 +25,18 @@ direction x = case x of
     (-1, -1) -> NW
     _        -> X
 
+offset :: Direction -> (Int, Int)
+offset x = case x of
+    N  -> (-1, 0)
+    NE -> (-1, 1)
+    E  -> (0, 1)
+    SE -> (1, 1)
+    S  -> (1, 0)
+    SW -> (1, -1)
+    W  -> (0, -1)
+    NW -> (-1, -1)
+    _  -> (0, 0)
+
 dirChar :: Direction -> Char
 dirChar x = case x of
     N  -> '↑'
@@ -34,6 +48,18 @@ dirChar x = case x of
     W  -> '←'
     NW -> '↖'
     X  -> '·'
+
+opposite :: Direction -> Direction
+opposite x = case x of
+    N  -> S
+    NE -> SW
+    E  -> W
+    SE -> NW
+    S  -> N
+    SW -> NE
+    W  -> E
+    NW -> SE
+    X  -> X
 
 instance Show Direction where
     show = show . dirChar
