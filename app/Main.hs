@@ -1,7 +1,7 @@
 module Main (main) where
 
 import Data.List (sortBy)
-import Data.Ord (comparing)
+import Data.Ord (comparing, Down(Down))
 import System.Environment (getArgs)
 
 import Game (wordPaths)
@@ -17,4 +17,5 @@ main = do
     ws <- lines <$> readFile f
     let board = fromLinearString (4, 4) b
         wps   = wordPaths board ws
-    mapM_ (`printWord` board) $ sortBy (comparing (length . word)) wps
+    mapM_ ((>>getChar) . (`printWord` board))
+        $ sortBy (comparing (Down . length . word)) wps
