@@ -5,9 +5,10 @@ module Game
 import Control.Monad.Reader
 import Data.Array
 import Data.Set (fromList, Set, member)
-import Data.List (tails)
-import Board(Board(..))
+import Data.List (tails, nubBy)
+import Data.Function (on)
 
+import Board(Board(..))
 import WordPath
 
 data GameData = GameData { board :: Array (Int, Int) Char
@@ -42,7 +43,9 @@ getPaths' :: R [WordPath]
 getPaths' = do
     GameData b w _ <- ask
     ps <- concat <$> mapM (`run` []) (indices b)
-    return $ filter ((`member` w) . word) $ zipWith WordPath (map (map (b!)) ps) ps
+    return $ nubBy ((==) `on` word)
+           $ filter ((`member` w) . word)
+           $ zipWith WordPath (map (map (b!)) ps) ps
 
 prefSet :: [String] -> Set String
 prefSet = fromList . concatMap tails
