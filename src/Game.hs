@@ -7,6 +7,7 @@ import Data.Array
 import Data.Set (fromList, Set, member)
 import Data.List (tails, nubBy)
 import Data.Function (on)
+import Control.Applicative (liftA2)
 
 import Board(Board(..))
 import WordPath
@@ -44,7 +45,7 @@ getPaths' = do
     GameData b w _ <- ask
     ps <- concat <$> mapM (`run` []) (indices b)
     return $ nubBy ((==) `on` word)
-           $ filter ((`member` w) . word)
+           $ filter (liftA2 (&&) ((2<) . length) (`member` w) . word)
            $ zipWith WordPath (map (map (b!)) ps) ps
 
 prefSet :: [String] -> Set String
